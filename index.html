@@ -7,13 +7,35 @@
 </head>
 <body>
 	<h1>Word Jelly Server</h1>
+	<button id = 'btnCreate'>New Game</button>
 	<script>
-
+		//html elements	
+		const btnCreate = document.getElementById('btnCreate');
+		let clientId = null;
 		let ws = new WebSocket("ws://localhost:9090")
+		//wiring events
+		 btnCreate.addEventListener('click', e=>{
+		 	const payLoad = {
+		 		"method": "create",
+		 		"clientId": clientId
+		 	}
+		 	ws.send(JSON.stringify(payLoad))
+		 })
+
 		ws.onmessage = message =>{
 			//message.data
 			const response = JSON.parse(message.data);
-			console.log(response);
+			console.log (response);
+			if (response.method === 'connect') {
+				clientId = response.clientId;
+				console.log('client id set successfully' + clientId );
+			}
+
+			if (response.method === 'create') {
+				clientId = response.clientId;
+				console.log(response);
+				console.log('game successfully created with id ' + response.game.id + 'with ' + response.ball);
+			}
 		}
 	</script>
 </body>
