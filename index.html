@@ -84,9 +84,8 @@
 					}
 				for(let i = 0; i< game.balls; i++){
 					const b = document.createElement('button');
-					b.id = "ball"+ i + 1;
-					b.tag = i+1;
 					b.textContent = i+1;
+					b.id = "ball"+ b.textContent;
 					b.style.width = '150px';
 					b.style.height = '150px';
 					b.addEventListener("click", e => {
@@ -95,11 +94,12 @@
 							"method": 'play',
 							"clientId": clientId,
 							"gameId": gameId,
-							"ballId": b.tag,
+							"ballId": b.id,
 							"color": playerColor
 						}
 						ws.send(JSON.stringify(payLoad));
 					})
+					console.log(b);
 					divBoard.appendChild(b);
 				}
 				
@@ -108,9 +108,9 @@
 				///{1: 'red', 1'}
 				if(!response.game.state) return;
 
-				for(const b of Object.keys(response.game.state[b])){
+				for(const b of Object.keys(response.game.state)){
 					const color = response.game.state[b];
-					const ballObject = document.getElementById("ball" + b);
+					const ballObject = document.getElementById(b);
 					ballObject.style.backgroundColor = color;
 
 				}

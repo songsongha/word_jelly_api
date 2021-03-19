@@ -61,9 +61,7 @@ wsServer.on("request", request => {
 				"clientId": clientId,
 				"color": color
 			})
-			//start the game if 3 people have joined
-			if(game.clients.length === 3) updateGameState();
-
+			
 			const payLoad = {
 				"method": 'join',
 				"game": game
@@ -73,6 +71,9 @@ wsServer.on("request", request => {
 			game.clients.forEach(c=>{
 				clients[c.clientId].connection.send(JSON.stringify(payLoad));
 			})
+
+			//start the game if 3 people have joined
+			if(game.clients.length === 3) updateGameState();
 
 		}
 
@@ -86,15 +87,16 @@ wsServer.on("request", request => {
 			if (!state){
 				state={};
 			}
-			state[ballId] = color;
+			state[ballId] = result.color;
 			games[gameId].state = state;
 			const game = games[gameId]
+			updateGameState();
 
-			const payLoad = {
-				"method": 'play',
-				"game": game
+			// const payLoad = {
+			// 	"method": 'play',
+			// 	"game": game
 
-			}
+			// }
 		}
 
 	})
@@ -125,7 +127,7 @@ function updateGameState(){
 		}
 
 		game.clients.forEach(c=>{
-			client[c.clientId].connection.send(JSON.stringify(payLoad))
+			clients[c.clientId].connection.send(JSON.stringify(payLoad))
 		})
 	}
 	setTimeout(updateGameState, 500);
